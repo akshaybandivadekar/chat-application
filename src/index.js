@@ -14,11 +14,22 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 
 app.use(express.static(publicDirectoryPath));
 
+//socket.emit => event to specific client
+//io.emit => event to every connected client
+//socket.broadcast.emit => event to every connected client except current client
+
+//io.to.emit => event to every connected client in same room
+//socket.broadcast.io.emit => event every connected client except current client in same room 
+
 io.on('connection', (socket) => {
     console.log('New WebSocket connection');
 
-    socket.emit('message', generateMessage('Welcome!'));
-    socket.broadcast.emit('message', generateMessage('A new user has joined!'));
+    socket.on('join', ({username, room}) => {
+        socket.join(room);
+
+        socket.emit('message', generateMessage('Welcome!'));
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`));
+    });
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter();

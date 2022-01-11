@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
         const {latitude, longitude} = locationObj;
         const user = getUser(socket.id);
         if(user) {
-            io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${latitude},${longitude}`));
+            io.to(user.room).emit('locationMessage', generateLocationMessage('Admin', `https://google.com/maps?q=${latitude},${longitude}`));
         }
         callback();
     });
